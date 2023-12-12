@@ -2,26 +2,8 @@
 import subprocess
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QFileDialog
-from pydub import AudioSegment
+# from pydub import AudioSegment
 import os
-<<<<<<< Updated upstream
-
-class AudioOverlayApp(QWidget):
-  def __init__(self):
-    super().__init__()
-
-    self.init_ui()
-
-  def init_ui(self):
-    # 创建按钮和标签
-    self.select_folder_button = QPushButton('选择音频文件夹', self)
-    self.select_folder_button.clicked.connect(self.select_folder)
-
-    self.overlay_button = QPushButton('叠加音频', self)
-    self.overlay_button.clicked.connect(self.overlay_audio)
-
-    self.info_label = QLabel(self)
-=======
 from untitled import Ui_MainWindow
 from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QAudioProbe
@@ -83,41 +65,27 @@ class AudioOverlayApp(QtWidgets.QMainWindow):
     self.play_music()
     print(self.music_play)
 
->>>>>>> Stashed changes
 
-    # 创建布局管理器
-    vbox = QVBoxLayout()
-    vbox.addWidget(self.select_folder_button)
-    vbox.addWidget(self.overlay_button)
-    vbox.addWidget(self.info_label)
 
-    # 设置主布局
-    self.setLayout(vbox)
+  def select_music(self):
+    options = QFileDialog.Options()
+    options |= QFileDialog.DontUseNativeDialog
+    file_name, _ = QFileDialog.getOpenFileName(self, 'Select Music File', '',
+                                               'Music Files (*.mp3 *.wav);;All Files (*)', options=options)
+    if file_name:
+      media_content = QMediaContent(QUrl.fromLocalFile(file_name))
+      self.media_player.setMedia(media_content)
 
-    # 设置窗口标题和大小
-    self.setWindowTitle('音频叠加应用')
-    self.setGeometry(300, 300, 300, 200)
+      #通过从后向前搜索第一个点和第一个反斜杠，确定文件路径
+      last_slash_index = file_name.rfind('/')
 
-  def select_folder(self):
-    # 打开文件夹选择对话框
-    folder_path = QFileDialog.getExistingDirectory(self, '选择音频文件夹')
-    self.selected_folder = folder_path
-    self.info_label.setText(f'已选择音频文件夹：{folder_path}')
+      # 提取文件名（包括扩展名）
+      file_name_with_extension = file_name[last_slash_index + 1:]
 
-  def overlay_audio(self):
-    if hasattr(self, 'selected_folder'):
-      # 获取文件夹中所有的音频文件
-      audio_files = [f for f in os.listdir(self.selected_folder) if f.endswith('.wav')]
+      # 去掉扩展名
+      last_dot_index = file_name_with_extension.rfind('.')
+      file_name_without_extension = file_name_with_extension[:last_dot_index]
 
-<<<<<<< Updated upstream
-      # 初始化输出音频
-      output = None
-
-      # 循环处理每个音频文件
-      for audio_file in audio_files:
-        # 构建音频文件的完整路径
-        audio_path = os.path.join(self.selected_folder, audio_file)
-=======
 
       self.ui.label_songname.setText(file_name_without_extension)
       self.adjust_font_size(self.ui.label_songname)
@@ -139,29 +107,28 @@ class AudioOverlayApp(QtWidgets.QMainWindow):
     self.spleeter_thread = SpleeterThread(self.input_file, self.output_dir)
     self.spleeter_thread.start()
 
->>>>>>> Stashed changes
 
-        # 读取音频文件
-        sound = AudioSegment.from_wav(audio_path)
+  def adjust_font_size(self,label):
+    text = label.text()
+    print('text:', text)
+    font = label.font()
+    # 测量文本的宽度
+    fm = QFontMetrics(font)
+    text_width = fm.width(text)
+    font_size=font.pointSize()
+    # 获取标签的宽度
+    label_width = label.width()
 
-        # 如果是第一个音频文件，直接赋值给output；否则叠加到output上
-        if output is None:
-          output = sound
-        else:
-          output = output.overlay(sound)
+    # 如果文本宽度超过标签宽度，调整字体大小
+    while text_width > label_width:
+      font_size -= 1
+      font.setPointSize(font_size)
+      label.setFont(font)
 
-      # 构建输出文件的完整路径，保存到输入文件夹中
-      output_file_name = 'output.wav'
-      output_path = os.path.join(self.selected_folder, output_file_name)
+      fm = QFontMetrics(font)
+      text_width = fm.width(text)
 
-      # 保存输出文件到指定位置
-      output.export(output_path, format="wav")
 
-<<<<<<< Updated upstream
-      self.info_label.setText(f'音频叠加完成，输出文件：{output_path}')
-    else:
-      self.info_label.setText('请先选择音频文件夹')
-=======
 
   def play_music(self):
     self.music_player_thread = MusicPlayerThread(self.ui)
@@ -174,10 +141,8 @@ class AudioOverlayApp(QtWidgets.QMainWindow):
       self.ui.horizontalSlider.setRange(0, self.media_player.duration())
       minutes, seconds = divmod(self.media_player.duration() / 1000, 60)
       self.ui.label_time_total.setText(f"{int(minutes):02d}:{int(seconds):02d}")
-      # print( self.media_player.duration())
     minutes, seconds = divmod(position / 1000, 60)
     self.ui.label_time.setText(f"{int(minutes):02d}:{int(seconds):02d}")
->>>>>>> Stashed changes
 
 
 if __name__ == '__main__':
@@ -185,3 +150,4 @@ if __name__ == '__main__':
   ex = AudioOverlayApp()
   ex.show()
   sys.exit(app.exec_())
+

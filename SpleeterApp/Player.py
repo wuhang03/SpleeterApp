@@ -11,6 +11,7 @@ class MusicPlayerThread(QThread):
         self.is_playing = False
 
     def run(self):
+        print("run")
         self.media_player.stateChanged.connect(self.state_changed)
         self.exec_()
 
@@ -22,6 +23,7 @@ class MusicPlayerThread(QThread):
         self.is_playing = True
 
     def state_changed(self, state):
+        print("state changed")
         if state == QMediaPlayer.PlayingState:
             self.ui.pushButton_play.setIcon(QIcon("picture/pause_5072281.png"))
         else:

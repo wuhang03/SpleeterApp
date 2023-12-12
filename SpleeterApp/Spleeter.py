@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream
-import os
-=======
 
 from PyQt5.QtCore import QThread
->>>>>>> Stashed changes
 import subprocess
 import os
 
@@ -15,7 +11,7 @@ class SpleeterThread(QThread):
 
     def run(self):
         print("spleeter running")
-        os.chdir("./SpleeterApp")
+        print(os.getcwd())
         num_stems = 5
         command = f'spleeter separate -p spleeter:{num_stems}stems -o {self.output_dir} {self.input_file}'
         subprocess.run(command, shell=True, encoding='utf-8')
