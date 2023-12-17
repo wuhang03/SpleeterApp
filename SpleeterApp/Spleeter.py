@@ -1,6 +1,14 @@
 import os
 import subprocess
 
+<<<<<<< Updated upstream
+=======
+class SpleeterThread(QThread):
+    def __init__(self, input_file, output_dir,parent=None):
+        super(SpleeterThread,self).__init__(parent)
+        self.input_file = input_file
+        self.output_dir = output_dir
+>>>>>>> Stashed changes
 
 def run_spleeter(num_stems, input_file, output_dir):
     command = f'spleeter separate -p spleeter:{num_stems}stems -o {output_dir} {input_file}'
